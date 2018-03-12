@@ -1,3 +1,4 @@
+const readline = require('readline');
 const figlet = require('figlet');
 const chalk = require('chalk');
 
@@ -41,7 +42,7 @@ const biglog = (msg, color) => {
 * @param emsg    Texto de mensaje de error.
 */
 const errorlog = (emsg) => {
-    console.log(`${colorize("Error", 'red')}: ${colorize(colorize(emsg, 'red'), "bigYellowBright")}`);
+    console.log(`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"), "bigYellowBright")}`);////
 };
 
 exports = module.exports = {

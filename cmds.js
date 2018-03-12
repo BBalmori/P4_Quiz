@@ -1,5 +1,6 @@
 const { log, biglog, errorlog, colorize } = require("./out");
 const model = require('./model');
+const readline = require('readline');
 
 /**
 * Muestra la ayuda.
@@ -47,7 +48,7 @@ exports.showCmd = (rl, id) => {
             const quiz = model.getByIndex(id);
             log(` [${colorize(id, 'magenta')}]: ${quiz.question} ${colorize('=>', 'magenta')} ${quiz.answer}`);
         } catch (error) {
-            errorlog(error.message);
+            errorlog(error);////
             rl.prompt();
         }
     }
@@ -89,7 +90,7 @@ exports.deleteCmd = (rl, id) => {
         try {
             model.deleteByIndex(id);
         } catch (error) {
-            errorlog(error.message);
+            errorlog(error);
             rl.prompt();
         }
     }
@@ -119,7 +120,7 @@ exports.editCmd = (rl, id) => {
                 });
             });
         } catch (error) {
-            errorlog(error.message);
+            errorlog(error);
             rl.prompt();
         }
     }
@@ -179,8 +180,7 @@ exports.playCmd = rl => {
         } else {
             let id = Math.floor(Math.random() * (toBeResolved.length - 1));//coger un id al azar
             const quiz = model.getByIndex(id);
-            //toBeResolved.splice(id, 1);
-            
+            toBeResolved.splice(id, 1);
             rl.question(`${colorize(quiz.question, 'magenta')}${colorize('?', 'magenta')} `, answer => {
                 if (answer === quiz.answer) {
                     score++;

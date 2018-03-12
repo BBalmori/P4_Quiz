@@ -1,9 +1,8 @@
 // JavaScript source code
 const readline = require('readline');
+const model = require('./model');
 const { log, biglog, errorlog, colorize } = require("./out");
 const cmds = require("./cmds");
-
-
 
 //Mensaje inicial
 biglog('CORE Quiz', 'green');
@@ -30,7 +29,7 @@ rl
 
         switch (cmd) {
             case ' ':
-                rl.prompt(rl);
+                rl.prompt();
                 break;
 
             case 'help':
@@ -52,7 +51,7 @@ rl
                 break;
 
             case 'show':
-                cmds.showCmd(rl, args[1]);
+                cmds.showCmd(rl, args[1]);////
                 break;
 
             case 'test':
