@@ -40,7 +40,7 @@ exports.listCmd = rl => {
  * @param rl Objeto readLine usado para implementar el CLI.
  */
 exports.showCmd = (rl, id) => {
-    if (typeof id === "undefined") {
+    if (typeof id === 'undefined') {
         errorlog(`Falta el parámetro id.`);
     } else {
         try {
@@ -48,6 +48,7 @@ exports.showCmd = (rl, id) => {
             log(` [${colorize(id, 'magenta')}]: ${quiz.question} ${colorize('=>', 'magenta')} ${quiz.answer}`);
         } catch (error) {
             errorlog(error.message);
+            rl.prompt();
         }
     }
     rl.prompt();
@@ -82,13 +83,14 @@ exports.addCmd = rl => {
  * 
  */
 exports.deleteCmd = (rl, id) => {
-    if (typeof id === "undefined") {
+    if (typeof id === 'undefined') {
         errorlog(`Falta el parámetro id.`);
     } else {
         try {
             model.deleteByIndex(id);
         } catch (error) {
             errorlog(error.message);
+            rl.prompt();
         }
     }
     rl.prompt();
@@ -138,10 +140,12 @@ exports.testCmd = (rl, id) => {
     } else {
         try {
             const quiz = model.getByIndex(id);
-            rl.question(`${colorize(quiz.question, 'yellow')} ${colorize('?', 'yellow')} `, answer => {
+            rl.question(`${colorize(quiz.question, 'red')} ${colorize('?', 'red')} `, answer => {
                 if (answer === quiz.answer) {
-                    log(`${biglog('Correcto', 'green')}`);
+                    log(`Su respuesta es correcta.`);
+                    log(`${biglog('Correcta', 'green')}`);
                 } else {
+                    log(`Su respuesta es incorrecta.`);
                     log(`${biglog('Incorrecto', 'red')}`);
                 }
                 rl.prompt();
@@ -168,22 +172,24 @@ exports.playCmd = rl => {
     }
     const playOne = () => {
         if (toBeResolved.length === 0) {
-            log(`${biglog('¡HAS TERMINADO!', 'yellow')}`);
-            log(`${colorize('El número de preguntas acertadas es: ', 'yellow')}${colorize(score, 'yellow')} `);
+            log(`No hay nada más que preguntar. `);
+            log(`Fin del juego. Aciertos: ${score} `);
+            biglog(score, 'magenta');
             rl.prompt();
         } else {
             let id = Math.floor(Math.random() * (toBeResolved.length - 1));//coger un id al azar
             const quiz = model.getByIndex(id);
-            toBeResolved.splice(id, 1);
+            //toBeResolved.splice(id, 1);
+            
             rl.question(`${colorize(quiz.question, 'magenta')}${colorize('?', 'magenta')} `, answer => {
                 if (answer === quiz.answer) {
                     score++;
-                    log(`Respuesta correcta. Llevas ${colorize(score, 'green')} preguntas acertadas.`);
-                    
+                    log(`CORRECTO - Lleva ${score} aciertos.`);
                     playOne();
                 } else {
-                    log(`Respuesta incorrecta. Has acertado ${colorize(score, 'red')} preguntas.`);
-                    log(`${colorize('FIN DEL JUEGO', 'red')}`);
+                    log(`INCORRECTO.`);
+                    log(`Fin del juego. Aciertos: ${score}`);
+                    biglog(score, 'magenta');
                     rl.prompt();
                 }
                 
@@ -201,7 +207,7 @@ exports.playCmd = rl => {
  */
 exports.creditsCmd = rl => {
     log('Autor de la práctica: ');
-    log('Belen Balmori', 'green');
+    log('BELEN', 'green');
     rl.prompt();
 };
 
