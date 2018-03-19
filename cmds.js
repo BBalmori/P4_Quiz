@@ -220,11 +220,12 @@ exports.testCmd = (rl, id) => {
             if (!quiz) {
                 throw new Error(`No existe un quiz asociado al id=${id}.`);
             }
-            return new Sequelize.Promise((resolve, reject) => {
-                rl.question(`${colorize(quiz.question, 'red')}${colorize('?', 'red')} `, answer => {
-                    resolve(answer.trim());
-                });
-            })
+            //return new Sequelize.Promise((resolve, reject) => {
+            //    rl.question(`${colorize(quiz.question, 'red')}${colorize('?', 'red')} `, answer => {
+            //        resolve(answer.trim());
+            //    });
+            //})
+            makeQuestion(rl, `${quiz.question }: `)
                 .then(answer => {
                     if (answer === quiz.answer) {
                         log(`Su respuesta es correcta.`);
@@ -256,11 +257,18 @@ exports.testCmd = (rl, id) => {
  */
 exports.playCmd = rl => {
     let score = 0; //Preguntas acertadas
-    let nPreguntas = model.getAll().length; //Numero de preguntas del quizz
-    let toBeResolved = []; //Creo el array vacio que va a tener los id de las preguntas sin contestar
-    for (let i = 0; i < nPreguntas; i++) { //Relleno el array con los id de las preguntas del quiz
-        toBeResolved[i] = i;
-    }
+    let nPreguntas = 0;
+    let toBeResolved = []; 
+    models.quiz.findAll()
+        .each(quiz => {
+            ++nPreguntas;
+            for (let i = 0; i < nPreguntas; i++) { //Relleno el array con los id de las preguntas del quiz
+                toBeResolved[i] = i;
+            }
+        })
+        .catch(error => {
+            console.log(error.message);
+        })
     const playOne = () => {
         if (toBeResolved.length === 0) {
             log(`No hay nada más que preguntar. `);
@@ -269,22 +277,34 @@ exports.playCmd = rl => {
             rl.prompt();
         } else {
             let id = Math.floor(Math.random() * (toBeResolved.length - 1));//coger un id al azar
-            const quiz = model.getByIndex(id);
-            toBeResolved.splice(id, 1);
-            rl.question(`${colorize(quiz.question, 'magenta')}${colorize('?', 'magenta')} `, answer => {
-                if (answer === quiz.answer) {
-                    score++;
-                    log(`CORRECTO - Lleva ${score} aciertos.`);
-                    playOne();
-                } else {
-                    log(`INCORRECTO.`);
-                    log(`Fin del juego. Aciertos: ${score}`);
-                    biglog(score, 'magenta');
+            validateId(id)
+                .then(id => models.quiz.findById(id))
+                .then(quiz => {
+                    if (!quiz) {
+                        throw new Error(`No existe un quiz asociado al id=${id}.`);
+                    }
+                    makeQuestion(rl, `${quiz.question}: `)
+                        .then(answer => {
+                            if (answer === quiz.answer) {
+                                log(`Su respuesta es correcta.`);
+                                log(`${biglog('Correcta', 'green')}`);
+                            } else {
+                                log(`Su respuesta es incorrecta.`);
+                                log(`${biglog('Incorrecto', 'red')}`);
+                            }
+                            return quiz;
+                        })
+                })
+                .catch(Sequelize.ValidationError, error => {
+                    errorlog('El quiz es erróneo:');
+                    error.errors.forEach(({ message }) => errorlog(message));
+                })
+                .catch(error => {
+                    errorlog(error.message);
+                })
+                .then(() => {
                     rl.prompt();
-                }
-                
-            });
-          
+                })
         }
     }
     playOne();
