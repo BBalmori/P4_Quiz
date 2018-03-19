@@ -288,14 +288,8 @@ exports.playCmd = rl => {
             rl.prompt();
         })
     const playOne = () => {
-        //if (toBeResolved.length === 0) {
-        //    log(`No hay nada más que preguntar. `);
-        //    log(`Fin del juego. Aciertos: ${score} `);
-        //    biglog(score, 'magenta');
-        //    rl.prompt();
-        //} else {
-            let id = Math.floor(Math.random() * (toBeResolved.length - 1));//coger un id al azar
-            validateId(id)
+        let id = Math.floor(Math.random() * (toBeResolved.length - 1) + 1);//coger un id al aza
+        validateId(id)
                 .then(id => models.quiz.findById(id))
                 .then(quiz => {
                     if (!quiz) {
@@ -307,7 +301,6 @@ exports.playCmd = rl => {
                                 score++;
                                 toBeResolved.splice(id, 1);
                                 log(`Su respuesta es correcta.`);
-                                log(`${biglog('Correcta', 'green')}`);
                                 playOne()
                             } else {
                                 log(`Su respuesta es incorrecta.`);
