@@ -225,7 +225,7 @@ exports.testCmd = (rl, id) => {
             //        resolve(answer.trim());
             //    });
             //})
-            makeQuestion(rl, `${quiz.question }: `)
+            makeQuestion(rl, `${quiz.question }? `)
                 .then(answer => {
                     if (answer === quiz.answer) {
                         log(`Su respuesta es correcta.`);
@@ -260,22 +260,40 @@ exports.playCmd = rl => {
     let nPreguntas = 0;
     let toBeResolved = []; 
     models.quiz.findAll()
-        .each(quiz => {
-            ++nPreguntas;
+        .then(quizzes => {
+            quizzes.forEach((quiz, id) => {
+                ++nPreguntas;
+                //toBeResolved.lenght = nPreguntas;
+                //toBeResolved.push(quiz.id);
+            })
+
+        })
+        .then(() => {
             for (let i = 0; i < nPreguntas; i++) { //Relleno el array con los id de las preguntas del quiz
                 toBeResolved[i] = i;
             }
+            if (toBeResolved.length === 0) {
+                log(`No hay nada más que preguntar. `);
+                log(`Fin del juego. Aciertos: ${score} `);
+                biglog(score, 'magenta');
+                rl.prompt();
+            } else {
+                playOne()
+            }
         })
         .catch(error => {
-            console.log(error.message);
+            errorlog(error.message);
+        })
+        .then(() => {
+            rl.prompt();
         })
     const playOne = () => {
-        if (toBeResolved.length === 0) {
-            log(`No hay nada más que preguntar. `);
-            log(`Fin del juego. Aciertos: ${score} `);
-            biglog(score, 'magenta');
-            rl.prompt();
-        } else {
+        //if (toBeResolved.length === 0) {
+        //    log(`No hay nada más que preguntar. `);
+        //    log(`Fin del juego. Aciertos: ${score} `);
+        //    biglog(score, 'magenta');
+        //    rl.prompt();
+        //} else {
             let id = Math.floor(Math.random() * (toBeResolved.length - 1));//coger un id al azar
             validateId(id)
                 .then(id => models.quiz.findById(id))
@@ -283,14 +301,18 @@ exports.playCmd = rl => {
                     if (!quiz) {
                         throw new Error(`No existe un quiz asociado al id=${id}.`);
                     }
-                    makeQuestion(rl, `${quiz.question}: `)
+                    makeQuestion(rl, `${quiz.question}? `)
                         .then(answer => {
                             if (answer === quiz.answer) {
+                                score++;
+                                toBeResolved.splice(id, 1);
                                 log(`Su respuesta es correcta.`);
                                 log(`${biglog('Correcta', 'green')}`);
+                                playOne()
                             } else {
                                 log(`Su respuesta es incorrecta.`);
                                 log(`${biglog('Incorrecto', 'red')}`);
+                                rl.prompt();
                             }
                             return quiz;
                         })
@@ -305,9 +327,9 @@ exports.playCmd = rl => {
                 .then(() => {
                     rl.prompt();
                 })
-        }
+        //}
     }
-    playOne();
+    //playOne();
 };
 
 /**
