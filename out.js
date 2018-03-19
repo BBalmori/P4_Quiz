@@ -11,7 +11,11 @@ const chalk = require('chalk');
 */
 const colorize = (msg, color) => {
     if (typeof color !== "undefined") {
-        msg = chalk.blue(msg);
+        if (color === 'green') { msg = chalk.green(msg) }
+        if (color === 'blue') { msg = chalk.blue(msg) }
+        if (color === 'magenta') { msg = chalk.magenta(msg) }
+        if (color === 'yellow') { msg = chalk.yellow(msg) }
+        if (color === 'red') { msg = chalk.red(msg) }
     }
     return msg;
 };
