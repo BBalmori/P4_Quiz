@@ -312,6 +312,8 @@ exports.playCmd = rl => {
                             } else {
                                 log(`Su respuesta es incorrecta.`);
                                 log(`${biglog('Incorrecto', 'red')}`);
+                                log(`Fin del juego. Aciertos: ${score} `);
+                                biglog(score, 'magenta');
                                 rl.prompt();
                             }
                             return quiz;
