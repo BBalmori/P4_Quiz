@@ -316,7 +316,13 @@ exports.playCmd = rl => {
                                 biglog(score, 'magenta');
                                 rl.prompt();
                             }
-                            return quiz;
+                        })
+                        .catch(error => {
+                            errorlog(error.message);
+                            rl.prompt();
+                        })
+                        .then(() => {
+                            rl.prompt();
                         })
                 })
                 .catch(Sequelize.ValidationError, error => {
