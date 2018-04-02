@@ -1,6 +1,7 @@
 const readline = require('readline');
 const figlet = require('figlet');
 const chalk = require('chalk');
+const net = require("net");
 
 /**
 * Dar color a un string.

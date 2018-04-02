@@ -1,7 +1,8 @@
 const { log, biglog, errorlog, colorize } = require("./out");
 const readline = require('readline');
 const Sequelize = require('sequelize');
-const {models} = require('./model');
+const { models } = require('./model');
+const net = require("net");
 
 /**
 * Muestra la ayuda.
