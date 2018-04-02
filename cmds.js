@@ -305,7 +305,7 @@ exports.playCmd = (socket, rl) => {
                                 playOne()
                             } else {
                                 log(socket, `Su respuesta es incorrecta.`);
-                                log(socket, `${biglog('Incorrecto', 'red')}`);
+                                log(socket, `${biglog(socket, 'Incorrecto', 'red')}`);
                                 log(socket, `Fin del juego. Aciertos: ${score} `);
                                 biglog(socket, score, 'magenta');
                                 rl.prompt();
