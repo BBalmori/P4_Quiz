@@ -196,7 +196,7 @@ exports.editCmd = (socket, rl, id) => {
         })
         .catch(Sequelize.ValidationError, error => {
             errorlog(socket, 'El quiz es erróneo:');
-            error.errors.forEach(({ message }) => errorlog(message));
+            error.errors.forEach(({ message }) => errorlog(socket, message));
         })
         .catch(error => {
             errorlog(socket, error.message);
@@ -229,17 +229,17 @@ exports.testCmd = (socket, rl, id) => {
                 .then(answer => {
                     if (answer === quiz.answer) {
                         log(socket, `Su respuesta es correcta.`);
-                        log(socket, `${biglog('Correcta', 'green')}`);
+                        log(socket, `${biglog(socket, 'Correcta', 'green')}`);
                     } else {
                         log(socket, `Su respuesta es incorrecta.`);
-                        log(socket, `${biglog('Incorrecto', 'red')}`);
+                        log(socket, `${biglog(socket, 'Incorrecto', 'red')}`);
                     }
                     return quiz;
                 })
         })
         .catch(Sequelize.ValidationError, error => {
             errorlog(socket, 'El quiz es erróneo:');
-            error.errors.forEach(({ message }) => errorlog(message));
+            error.errors.forEach(({ message }) => errorlog(socket, message));
         })
         .catch(error => {
             errorlog(socket, error.message);
@@ -320,7 +320,7 @@ exports.playCmd = (socket, rl) => {
                 })
                 .catch(Sequelize.ValidationError, error => {
                     errorlog(socket, 'El quiz es erróneo:');
-                    error.errors.forEach(({ message }) => errorlog(message));
+                    error.errors.forEach(({ message }) => errorlog(socket, message));
                 })
                 .catch(error => {
                     errorlog(socket, error.message);
