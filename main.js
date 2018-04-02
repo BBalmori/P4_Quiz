@@ -26,7 +26,7 @@ net.createServer(socket => {
 
     socket
         .on("end", () => { rl.close(); })
-        .on("error", () => { rl.close(); })
+        .on("error", () => { rl.close() });
 
     rl.prompt();
 

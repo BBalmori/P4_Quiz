@@ -37,7 +37,7 @@ const log = (socket, msg, color) => {
 * @param msg    El string a escribir.
 * @param color  Color del texto.
 */
-const biglog = (socket ,msg, color) => {
+const biglog = (socket, msg, color) => {
     log(socket, figlet.textSync(msg, { horizontalLayout: 'full' }), color);
 };
 
